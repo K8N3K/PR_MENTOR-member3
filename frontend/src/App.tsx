@@ -45,7 +45,6 @@ function pretty(value: string) {
 
 export default function App() {
   const auth = useAuth();
- codex/firebase-auth
   const location = useLocation();
   const isLoginRoute = location.pathname.replace(/\/$/, '') === '/login';
   if (isLoginRoute) return <LoginPage />;
@@ -56,11 +55,8 @@ export default function App() {
 
 function Workspace() {
   const auth = useAuth();
- main
   const navigateRouter = useNavigate();
   const location = useLocation();
-  if (location.pathname.replace(/\/$/, '') === '/login') return <LoginPage />;
-  if (auth.loading) return <div className="app-auth-loading" role="status"><span className="brand-mark"><Code2 size={17}/><i/></span><LoaderCircle className="spin" size={18}/> Restoring your workspace…</div>;
   const page = pageFromPath(location.pathname);
   const [mobileNav, setMobileNav] = useState(false);
   const [mobileViewport, setMobileViewport] = useState(() => window.matchMedia('(max-width: 760px)').matches);
