@@ -295,7 +295,7 @@ function Workspace() {
             {nav.map(({ id, label, icon: Icon }) => <button key={id} type="button" className={`side-link ${page === id ? 'selected' : ''}`} aria-label={label} title={label} aria-current={page === id ? 'page' : undefined} onClick={() => go(id)}><Icon size={17}/><span>{label}</span>{id === 'history' && history.length > 0 && <small>{history.length}</small>}</button>)}
           </nav>
           <div className="sidebar-note"><div className="note-icon"><ShieldCheck size={16}/></div><strong>Evidence first</strong><p>AI suggestions need a human review. Static analyzer output is shown with its source.</p></div>
-          <div className="sidebar-bottom">{auth.user?.avatar_url ? <img className="guest-avatar profile-avatar" src={auth.user.avatar_url} alt=""/> : <span className="guest-avatar">{auth.user ? auth.user.display_name.slice(0, 2).toUpperCase() : 'PM'}</span>}<span><strong>{auth.user?.display_name ?? 'Guest workspace'}</strong><small>{auth.user?.email ?? 'Public workspace'}</small></span>{auth.user ? <button className="logout-button" type="button" onClick={() => void auth.logout()} aria-label="Sign out">Sign out</button> : <button className="login-link" type="button" onClick={() => navigateRouter('/login')}>Sign in</button>}</div>
+          <div className="sidebar-bottom">{auth.user?.avatar_url ? <img className="guest-avatar profile-avatar" src={auth.user.avatar_url} alt=""/> : <span className="guest-avatar">{auth.user ? auth.user.display_name.slice(0, 2).toUpperCase() : 'PM'}</span>}<span><strong>{auth.user?.display_name ?? 'Guest workspace'}</strong><small>{auth.user?.email ?? 'Public workspace'}</small></span></div>
         </aside>
 
         <main className="main-content">

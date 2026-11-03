@@ -295,7 +295,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .side-link small { position: absolute; top: 2px; right: 4px; margin: 0; }
   .sidebar-note { display: none; }
   .sidebar-bottom { justify-content: center; padding-top: 12px; }
-  .sidebar-bottom > span:nth-child(2), .sidebar-bottom > svg { display: none; }
+  .sidebar-bottom > span:nth-child(2) { display: none; }
   .main-content { width: calc(100% - 78px); }
 }
 @media (max-width: 760px) {
@@ -314,7 +314,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .sidebar-note { display: block; }
   .sidebar-bottom { justify-content: flex-start; }
   .sidebar-bottom > span:nth-child(2) { display: grid; }
-  .sidebar-bottom > svg { display: block; }
   .drawer-backdrop { position: fixed; z-index: 30; inset: 62px 0 0; display: block; width: 100%; height: calc(100vh - 62px); border: 0; background: #11121b70; }
   .main-content { width: 100%; min-width: 0; padding-inline: clamp(16px, 5vw, 32px); }
   .landing-page { padding-top: 30px; }
