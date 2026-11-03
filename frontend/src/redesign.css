@@ -140,7 +140,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .side-link svg { transition: transform .18s ease; }
 .side-link:hover svg { transform: translateX(2px); }
 .sidebar-note { border: 1px solid var(--border); border-radius: 13px; background: var(--surface); }
-.sidebar-bottom { border-radius: 12px; }
 .main-content { width: calc(100% - 250px); max-width: none; padding-inline: clamp(22px, 4.8vw, 76px); }
 .footer { width: min(1200px, 100%); padding-block: 20px 25px; font-size: 11px; }
 .content-page { width: min(1160px, 100%); padding-top: clamp(34px, 5vw, 64px); }
@@ -294,8 +293,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .side-link > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .side-link small { position: absolute; top: 2px; right: 4px; margin: 0; }
   .sidebar-note { display: none; }
-  .sidebar-bottom { justify-content: center; padding-top: 12px; }
-  .sidebar-bottom > span:nth-child(2) { display: none; }
   .main-content { width: calc(100% - 78px); }
 }
 @media (max-width: 760px) {
@@ -312,8 +309,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .side-link > span { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; }
   .side-link small { position: static; margin-left: auto; }
   .sidebar-note { display: block; }
-  .sidebar-bottom { justify-content: flex-start; }
-  .sidebar-bottom > span:nth-child(2) { display: grid; }
   .drawer-backdrop { position: fixed; z-index: 30; inset: 62px 0 0; display: block; width: 100%; height: calc(100vh - 62px); border: 0; background: #11121b70; }
   .main-content { width: 100%; min-width: 0; padding-inline: clamp(16px, 5vw, 32px); }
   .landing-page { padding-top: 30px; }
@@ -434,7 +429,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 :root[data-theme="dark"] .brand b,
 :root[data-theme="dark"] .top-context strong,
 :root[data-theme="dark"] .sidebar-note strong,
-:root[data-theme="dark"] .sidebar-bottom strong,
 :root[data-theme="dark"] .page-heading h1,
 :root[data-theme="dark"] .finding-title-row h3,
 :root[data-theme="dark"] .finding-evidence h4,
@@ -448,7 +442,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 :root[data-theme="dark"] .landing-form > label,
 :root[data-theme="dark"] .landing-mode-select strong { color: var(--text-primary); }
 :root[data-theme="dark"] .sidebar-label,
-:root[data-theme="dark"] .sidebar-bottom small,
 :root[data-theme="dark"] .top-context,
 :root[data-theme="dark"] .page-heading p,
 :root[data-theme="dark"] .finding-description,
@@ -519,7 +512,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 :root[data-theme="dark"] .record-icon,
 :root[data-theme="dark"] .empty-icon,
 :root[data-theme="dark"] .note-icon,
-:root[data-theme="dark"] .guest-avatar { color: var(--accent-strong); border-color: var(--border); background: var(--accent-surface); }
 :root[data-theme="dark"] .severity-critical,
 :root[data-theme="dark"] .severity-high { color: #ffb1b5; background: #48282d; }
 :root[data-theme="dark"] .severity-medium { color: #f0cd83; background: #443722; }
@@ -645,7 +637,7 @@ code, pre, kbd, samp, .tool-name, .review-meta code, .finding-location code,
 .exercise-content h2, .exercise-link strong, .review-summary strong,
 .results-heading h2, .start-intro h2, .step-card h3, .capability-card h3,
 .landing-form > label, .landing-mode-select strong, .sidebar-note strong,
-.sidebar-bottom strong, .state-panel strong { color: var(--text-primary); }
+.state-panel strong { color: var(--text-primary); }
 .landing-form > label, .landing-mode-select legend, .landing-mode-select strong,
 .landing-input-row input { font-size: var(--type-body-small); }
 .landing-mode-select small { font-size: var(--type-caption); }
