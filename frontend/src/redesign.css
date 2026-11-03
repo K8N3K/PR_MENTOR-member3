@@ -113,8 +113,26 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .theme-toggle { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--text-primary); background: var(--surface); cursor: pointer; transition: transform .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease; }
 .theme-toggle:hover { transform: rotate(-7deg); border-color: var(--accent); color: var(--accent-strong); }
 .theme-toggle:active { transform: scale(.94); }
-.top-github { min-height: 40px; border-radius: 999px; padding-inline: 15px; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
-.top-github:hover { border-color: #c9c2e8; background: #f3f1fb; transform: translateY(-1px); }
+.profile-menu { position: relative; margin-left: auto; flex: 0 0 auto; }
+.profile-trigger { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 5px 11px 5px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-primary); background: var(--surface); cursor: pointer; transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.profile-trigger:hover, .profile-trigger[aria-expanded="true"] { transform: translateY(-1px); border-color: var(--accent); background: var(--surface-hover); box-shadow: 0 5px 16px #17161b12; }
+.profile-trigger-avatar { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 50%; object-fit: cover; }
+.profile-trigger-initials { color: var(--text-on-accent); background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); font-size: 11px; font-weight: 750; }
+.profile-trigger-copy { min-width: 72px; display: grid; gap: 2px; text-align: left; }
+.profile-trigger-copy strong { max-width: 150px; overflow: hidden; color: var(--text-primary); font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.profile-trigger-copy small { color: var(--text-muted); font-size: 9px; }
+.profile-trigger-chevron { color: var(--text-muted); transition: transform .2s ease, color .2s ease; }
+.profile-trigger[aria-expanded="true"] .profile-trigger-chevron { transform: rotate(180deg); color: var(--accent-strong); }
+.profile-dropdown { position: absolute; z-index: 60; top: calc(100% + 10px); right: 0; width: min(280px, calc(100vw - 24px)); padding: 10px; border: 1px solid var(--border); border-radius: 14px; color: var(--text-primary); background: var(--surface); box-shadow: 0 16px 42px #10101830; transform-origin: top right; animation: profile-menu-enter .18s cubic-bezier(.2,.75,.3,1) both; }
+.profile-dropdown-identity { display: flex; align-items: center; gap: 11px; padding: 8px 7px 11px; }
+.profile-dropdown-identity > span { min-width: 0; display: grid; gap: 4px; }
+.profile-dropdown-identity strong { overflow: hidden; color: var(--text-primary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.profile-dropdown-identity small { overflow: hidden; color: var(--text-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.profile-dropdown-divider { height: 1px; margin: 0 3px 7px; background: var(--border); }
+.profile-option { width: 100%; min-height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border: 0; border-radius: 9px; color: var(--text-secondary); background: transparent; cursor: pointer; text-align: left; font-size: 11px; font-weight: 650; transition: color .16s ease, background-color .16s ease, transform .16s ease; }
+.profile-option:hover { transform: translateX(3px); color: var(--danger); background: var(--danger-surface); }
+.profile-option:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+@keyframes profile-menu-enter { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .app-body { min-height: calc(100vh - 70px); }
 .sidebar { width: 250px; flex-basis: 250px; padding: 30px 18px 20px; background: var(--surface-secondary); border-color: var(--border); transition: width .2s ease, flex-basis .2s ease, background-color .2s ease, border-color .2s ease; }
 .side-link { min-height: 44px; height: auto; border-radius: 10px; }
@@ -285,8 +303,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .mobile-menu { width: 38px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); background: var(--surface); }
   .top-context { display: none; }
   .theme-toggle { width: 38px; height: 38px; margin-left: auto; }
-  .top-github { margin-left: 0; padding: 8px 10px; }
-  .top-github span, .top-github svg:last-child { display: none; }
+  .profile-menu { margin-left: 0; }
   .app-body { min-height: calc(100vh - 62px); }
   .sidebar { position: fixed; z-index: 40; inset: 62px auto 0 0; width: min(310px, 86vw); flex-basis: auto; padding: 25px 16px 18px; transform: translateX(-105%); visibility: hidden; box-shadow: 14px 0 35px #211c2924; }
   .nav-open .sidebar { transform: translateX(0); visibility: visible; }
@@ -329,7 +346,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .brand { gap: 7px; font-size: 17px; }
   .brand-mark { width: 27px; height: 27px; }
   .theme-toggle { width: 36px; height: 36px; }
-  .top-github { padding: 8px; }
+  .profile-trigger { min-height: 40px; padding: 4px; }
+  .profile-trigger-copy, .profile-trigger-chevron { display: none; }
   .main-content { padding-inline: 15px; }
   .landing-page { padding-top: 25px; }
   .landing-hero { gap: 9px; }
@@ -446,7 +464,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 :root[data-theme="dark"] .results-heading p,
 :root[data-theme="dark"] .tool-row,
 :root[data-theme="dark"] .diff-toolbar > span:last-child { color: var(--text-secondary); }
-:root[data-theme="dark"] .top-github,
+:root[data-theme="dark"] .profile-trigger,
+:root[data-theme="dark"] .profile-dropdown,
 :root[data-theme="dark"] .theme-toggle,
 :root[data-theme="dark"] .side-link,
 :root[data-theme="dark"] .exercise-link,
@@ -460,6 +479,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 :root[data-theme="dark"] .exercise-link.active,
 :root[data-theme="dark"] .answer-option.selected { color: var(--accent-strong); border-color: var(--border); background-color: var(--accent-surface); }
 :root[data-theme="dark"] .theme-toggle:hover { color: var(--accent-strong); border-color: var(--accent); background: var(--accent-surface); }
+:root[data-theme="dark"] .profile-trigger:hover,
+:root[data-theme="dark"] .profile-trigger[aria-expanded="true"] { color: var(--text-primary); border-color: var(--accent); background: var(--surface-muted); }
 :root[data-theme="dark"] .landing-lede,
 :root[data-theme="dark"] .start-intro > div > p:last-child,
 :root[data-theme="dark"] .section-heading > p,

@@ -3,8 +3,8 @@ import type { FormEvent, ReactNode } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity, ArrowRight, Bookmark, BookOpen, CheckCircle2, ChevronRight, CircleAlert,
-  Code2, ExternalLink, FileCode2,
-  GitPullRequest, GraduationCap, History, LoaderCircle, Menu, Search,
+  ChevronDown, Code2, ExternalLink, FileCode2,
+  GitPullRequest, GraduationCap, History, LoaderCircle, LogOut, Menu, Search,
   Moon, ShieldCheck, Sparkles, Sun, X,
 } from 'lucide-react';
 import {
@@ -67,9 +67,13 @@ function Workspace() {
   const location = useLocation();
   const page = pageFromPath(location.pathname);
   const [mobileNav, setMobileNav] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
   const [mobileViewport, setMobileViewport] = useState(() => window.matchMedia('(max-width: 760px)').matches);
   const mobileMenuRef = useRef<HTMLButtonElement>(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
+  const profileSignOutRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const [url, setUrl] = useState('');
   const [mode, setMode] = useState<AnalysisMode>('demo');
@@ -112,6 +116,28 @@ function Workspace() {
     viewport.addEventListener('change', updateViewport);
     return () => viewport.removeEventListener('change', updateViewport);
   }, []);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+    profileSignOutRef.current?.focus();
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (event.target instanceof Node && !profileMenuRef.current?.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setProfileMenuOpen(false);
+        profileTriggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [profileMenuOpen]);
 
   useEffect(() => {
     if (!mobileNav || !mobileViewport) return;
@@ -245,7 +271,21 @@ function Workspace() {
         <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} aria-pressed={theme === 'dark'} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
           {theme === 'dark' ? <Sun size={17}/> : <Moon size={17}/>}
         </button>
-        <a className="top-github" href="https://github.com" target="_blank" rel="noreferrer"><Code2 size={16}/><span>GitHub</span><ExternalLink size={12}/></a>
+        <div className="profile-menu" ref={profileMenuRef}>
+          <button ref={profileTriggerRef} className="profile-trigger" type="button" aria-label={profileMenuOpen ? 'Close profile menu' : 'Open profile menu'} aria-haspopup="menu" aria-expanded={profileMenuOpen} aria-controls="profile-menu-options" onClick={() => setProfileMenuOpen((open) => !open)}>
+            {auth.user?.avatar_url ? <img className="profile-trigger-avatar" src={auth.user.avatar_url} alt=""/> : <span className="profile-trigger-avatar profile-trigger-initials">{auth.user?.display_name?.slice(0, 2).toUpperCase() ?? 'PM'}</span>}
+            <span className="profile-trigger-copy"><strong>{auth.user?.display_name ?? 'Your profile'}</strong><small>Account</small></span>
+            <ChevronDown className="profile-trigger-chevron" size={15}/>
+          </button>
+          {profileMenuOpen && <div className="profile-dropdown" id="profile-menu-options" role="menu" aria-label="Profile options">
+            <div className="profile-dropdown-identity" role="presentation">
+              {auth.user?.avatar_url ? <img className="profile-trigger-avatar" src={auth.user.avatar_url} alt=""/> : <span className="profile-trigger-avatar profile-trigger-initials">{auth.user?.display_name?.slice(0, 2).toUpperCase() ?? 'PM'}</span>}
+              <span><strong>{auth.user?.display_name ?? 'Your profile'}</strong><small>{auth.user?.email ?? ''}</small></span>
+            </div>
+            <div className="profile-dropdown-divider" role="presentation"/>
+            <button ref={profileSignOutRef} className="profile-option" type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); void auth.logout(); }}><LogOut size={16}/>Sign out</button>
+          </div>}
+        </div>
       </header>
       {mobileNav && <button className="drawer-backdrop" type="button" onClick={() => { setMobileNav(false); mobileMenuRef.current?.focus(); }} aria-label="Close navigation"/>}
       <div className={`app-body ${mobileNav ? 'nav-open' : ''}`}>
