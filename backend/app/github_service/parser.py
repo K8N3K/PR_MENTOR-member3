@@ -68,6 +68,7 @@ def parse_pull_request_url(value: str) -> PullRequestCoordinates:
         number=int(raw_number),
     )
 
+
 def _mapping(value: Any, label: str) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise GitHubServiceError(f"GitHub returned malformed {label} data.")
