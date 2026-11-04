@@ -1,20 +1,20 @@
 # PR Mentor frontend
 
-React + TypeScript frontend powered by Vite. All frontend source, configuration, and public assets live in this directory.
+React + TypeScript application built with Vite.
 
-## Run locally
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Copy `.env.example` to `.env.local` and set `VITE_API_BASE_URL` to the FastAPI service URL. Start the backend from `backend/` with `uvicorn app.main:app --reload --port 8000`.
+Copy `.env.example` to `.env.local`, set `VITE_API_BASE_URL` to the FastAPI origin (defaults to `http://127.0.0.1:8000`), and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from the Supabase project **Connect** dialog or API settings. The URL must be the project root (for example `https://your-project-ref.supabase.co`), without `/rest/v1`. Use a publishable (`sb_publishable_…`) or legacy `anon` key in the frontend; never put a secret (`sb_secret_…`) or service-role key in frontend variables. Vite loads environment values when its dev server/build starts, so restart `npm run dev` after changing `.env.local`. Start the backend as described in [`../backend/README.md`](../backend/README.md).
 
-Email and phone login use `POST /api/auth/otp/send` and `POST /api/auth/otp/verify`. Local development defaults to a clearly labeled demo code shown in the login screen. For actual delivery, set `PR_MENTOR_OTP_MODE=smtp` with SMTP settings or `PR_MENTOR_OTP_MODE=twilio` with Twilio SMS settings; see `backend/.env.example`. Never use demo OTP mode in production.
+The Discover page asks whether to use demo or live analysis. Demo findings are explicitly sample content from the backend and do not describe the submitted pull request. History, saved links, diffs, and learning data come from API responses. API errors and unavailable backend stages remain visible; this frontend does not invent fallback review results.
 
-This starter keeps OTP challenges, send limits, and sessions in process memory. Use a shared store and persistent account/session handling before deploying multiple backend workers or using it for production accounts.
+ codex/fix-supabase-env-deployment
+The `/login` page signs in with GitHub through Supabase Auth. In Supabase, enable the GitHub provider and add the app URLs under Authentication → URL Configuration: `http://localhost:5173/PR_MENTOR/` for local development and `https://pr-mentor.github.io/PR_MENTOR/` for GitHub Pages. The GitHub OAuth app callback URL must be the callback shown in Supabase's GitHub provider settings. GitHub Pages builds use the `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` repository variables under Settings → Secrets and variables → Actions → Variables; adding `.env` to the repository does not configure those builds. Configure the Supabase project URL and publishable key on the backend host for API token validation. Review history and saved pull requests are private to the signed-in account. Configure persistent shared MongoDB storage on the backend host for history to appear across devices; local SQLite files are not shared between backend instances.
 
-The review UI expects `POST /api/reviews/analyze` to accept `{ "url": "https://github.com/owner/repo/pull/42" }`. API calls are isolated in `src/services/api.ts`.
-
-When the backend is unavailable, the review workspace and verification panels remain clearly labeled as sample data. No API credentials or database connection details belong in this frontend.
+The `/login` page signs in with GitHub through Supabase Auth. In Supabase, enable the GitHub provider and add the app URLs under Authentication → URL Configuration: `http://localhost:5173/PR_MENTOR/` for local development and `https://pr-mentor.github.io/PR_MENTOR/` for GitHub Pages. The GitHub OAuth app callback URL must be the callback shown in Supabase's GitHub provider settings. GitHub Pages builds use the `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` repository variables under Settings → Secrets and variables → Actions → Variables; adding `.env` to the repository does not configure those builds. Configure the Supabase project URL and publishable key on the backend host for API token validation. Review history, saved links, and learning progress remain shared records and are not user-scoped.
+ main
