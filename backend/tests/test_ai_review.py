@@ -30,7 +30,7 @@ def test_prompt_wraps_context_as_untrusted_json():
 
     assert "<untrusted_pr_json>" in prompt
     assert '"title": "Example"' in prompt
-    assert "untrusted repository data" in prompt.lower()
+    assert "untrusted pr context" in prompt.lower()
     assert "Do not claim tests were run" in SYSTEM_PROMPT
 
 
