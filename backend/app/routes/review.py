@@ -1,21 +1,7 @@
- main
-"""Review endpoints consumed by the default frontend."""
-
-from uuid import uuid4
-
-from fastapi import APIRouter, HTTPException
-
-from app.github_service.client import GitHubServiceError
-from app.github_service.parser import parse_pull_request_url
-from app.github_service.pull_requests import ingest_pull_request
-from app.database.reviews import get_review as load_review, list_reviews, save_review
-from app.schemas.review import ReviewAnalyzeRequest
-from app.services.review_orchestrator import run_review
-
 """Stable review API consumed by the frontend."""
 
 from typing import Annotated, Any
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 
 from app.database.reviews import get_store
 from app.github_service.client import GitHubAPIError
@@ -25,47 +11,26 @@ from app.services.review_orchestrator import analyze
 from app.routes.auth import current_claims
  codex/fix-supabase-env-deployment
 
+ codex/fix-supabase-env-deployment
+
+ main
  main
  main
 
 router = APIRouter(prefix="/api/reviews", tags=["reviews"])
 
 
- main
-@router.post("/analyze")
-def analyze_pull_request(request: ReviewAnalyzeRequest):
-    try:
-        # Validate the URL before making any outbound request.
-        parse_pull_request_url(request.url)
-        result = run_review(ingest_pull_request(request.url))
-        result["review_id"] = uuid4().hex
-        save_review(result)
-        return result
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except GitHubServiceError as exc:
-        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
-    except Exception as exc:
-        raise HTTPException(status_code=503, detail="Review could not be completed. Configure the AI provider and try again.") from exc
-
-
-@router.get("/history")
-def history():
-    return list_reviews()
-
-
-@router.get("/{review_id}")
-def get_review(review_id: str):
-    review = load_review(review_id)
-
 @router.post("/analyze", response_model=ReviewResponse)
-async def analyze_review(payload: AnalyzeRequest, claims: Annotated[dict[str, Any], Depends(current_claims)]):
+async def analyze_review(payload: AnalyzeRequest, claims: Annotated[dict[str, Any], Depends(current_claims)], github_token: str | None = Header(default=None, alias="X-GitHub-Token", max_length=512)):
+    if github_token and any(ord(char) < 32 or ord(char) == 127 for char in github_token):
+        raise HTTPException(status_code=400, detail="The GitHub provider token is malformed.")
     try:
-        return await analyze(payload, claims["uid"])
+        return await analyze(payload, claims["uid"], github_token=github_token)
     except InvalidPullRequestURL as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except GitHubAPIError as exc:
         status = exc.status_code
+        detail = str(exc)
         if status is None:
             status = 503
         elif status == 404:
@@ -73,14 +38,15 @@ async def analyze_review(payload: AnalyzeRequest, claims: Annotated[dict[str, An
         elif status == 429:
             status = 429
         elif status == 401:
-            status = 401
+            status = 502
+            detail = "GitHub rejected its access token. Sign out and back in to reconnect GitHub, or update the backend GITHUB_TOKEN."
         elif status == 403:
             status = 403
         elif status >= 500:
             status = 502
         else:
             status = 502
-        raise HTTPException(status_code=status, detail=str(exc)) from exc
+        raise HTTPException(status_code=status, detail=detail) from exc
     except ValueError as exc:
         raise HTTPException(status_code=502, detail="GitHub returned data that could not be processed.") from exc
     except Exception as exc:
@@ -148,7 +114,6 @@ def get_review(review_id: str, claims: Annotated[dict[str, Any], Depends(current
         review = get_store().get_review(review_id, claims["uid"])
     except Exception as exc:
         raise HTTPException(status_code=503, detail="Review data is unavailable.") from exc
- main
     if review is None:
         raise HTTPException(status_code=404, detail="Review not found.")
     return review

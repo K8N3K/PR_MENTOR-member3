@@ -77,8 +77,6 @@ def run_review(
         "status": "completed",
     }
 
-main
-
 """Coordinate ingestion, static checks, optional AI review, and persistence."""
 
 import asyncio
@@ -103,7 +101,7 @@ from app.verification.ruff_runner import ToolExecutionError, run_ruff
 from app.verification.test_runner import run_tests
 
 
-async def analyze(request: AnalyzeRequest, user_id: str) -> ReviewResponse:
+async def analyze(request: AnalyzeRequest, user_id: str, github_token: str | None = None) -> ReviewResponse:
     submitted_url = request.pull_request_url or request.url or ""
     owner, repo, number = parse_pull_request_url(submitted_url)
     if request.mode == "demo":
@@ -121,7 +119,7 @@ async def analyze(request: AnalyzeRequest, user_id: str) -> ReviewResponse:
         return response
 
     started = datetime.now(timezone.utc)
-    bundle = await fetch_pull_request(submitted_url)
+    bundle = await fetch_pull_request(submitted_url, github_token=github_token) if github_token else await fetch_pull_request(submitted_url)
     warnings = list(bundle.warnings)
     diff_files = [parse_patch(item.model_dump()) for item in bundle.files[:100]]
     if len(bundle.files) > 100:
@@ -139,7 +137,7 @@ async def analyze(request: AnalyzeRequest, user_id: str) -> ReviewResponse:
             warnings.append("Static analysis was capped at 20 Python files.")
             break
         try:
-            content = await get_file_content(owner, repo, safe_name, bundle.metadata.head_sha)
+            content = await get_file_content(owner, repo, safe_name, bundle.metadata.head_sha, github_token=github_token) if github_token else await get_file_content(owner, repo, safe_name, bundle.metadata.head_sha)
         except Exception:
             content = None
         if content is None:
@@ -252,7 +250,10 @@ def _static_finding(tool: str, item: Finding, root: Path) -> ReviewFinding:
 
 def _persist(response: ReviewResponse, user_id: str) -> None:
     get_store().save_review(response.model_dump(mode="json"), user_id)
+codex/fix-supabase-env-deployment
+
  codex/fix-supabase-env-deployment
 
+ main
  main
  main
